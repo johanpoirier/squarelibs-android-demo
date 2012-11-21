@@ -1,4 +1,6 @@
-dagger-android-demo
+squarelibs-android-demo
 ===================
 
-Android demo application using Dagger from Square.
+Android demo application using various libs from Square :
+ - Dagger : dependency injection
+ - Otto : event bus
