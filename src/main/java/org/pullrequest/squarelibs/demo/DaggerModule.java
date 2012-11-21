@@ -1,0 +1,41 @@
+package org.pullrequest.squarelibs.demo;
+
+import javax.inject.Singleton;
+
+import org.pullrequest.squarelibs.demo.activity.Main;
+import org.pullrequest.squarelibs.demo.receiver.WifiInfoReceiver;
+import org.pullrequest.squarelibs.demo.service.MyService;
+
+import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
+
+import dagger.Module;
+import dagger.ObjectGraph;
+import dagger.Provides;
+
+@Module(entryPoints = { Main.class, WifiInfoReceiver.class})
+public class DaggerModule {
+
+	private static ObjectGraph graph;
+	
+	@Provides
+	@Singleton
+	public MyService provideMyService() {
+		return new MyService();
+	}
+
+	@Provides
+	@Singleton
+	public Bus provideBus() {
+		// our event bus running on any thread
+		return new Bus(ThreadEnforcer.ANY);
+	}
+	
+	// give access to the graph in the entire app
+	public static ObjectGraph getObjectGraph() {
+		if(graph == null) {
+			graph = ObjectGraph.create(new DaggerModule());
+		}
+		return graph;
+	}
+}
