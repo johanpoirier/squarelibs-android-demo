@@ -5,7 +5,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.pullrequest.squarelibs.demo.C;
-import org.pullrequest.squarelibs.demo.DaggerModule;
 import org.pullrequest.squarelibs.demo.R;
 import org.pullrequest.squarelibs.demo.activity.adapter.NetworkListAdapter;
 import org.pullrequest.squarelibs.demo.events.MessageEvent;
@@ -15,6 +14,7 @@ import org.pullrequest.squarelibs.demo.rest.Github;
 import org.pullrequest.squarelibs.demo.rest.Repo;
 import org.pullrequest.squarelibs.demo.service.MyService;
 
+import retrofit.http.RestAdapter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -30,23 +30,23 @@ public class Main extends DaggerActivity {
 
 	@Inject
 	private MyService service;
+	
+	@Inject
+	private RestAdapter restAdapater;
 
 	private NetworkListAdapter networkListAdapter;
 	private WifiManager wifiManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		// getting wifi manager before enabling the bus
+		wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
 		// using my injected service to get title
 		setTitle(service.getName());
-
-		// getting wifi manager before enabling the bus
-		wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-
-		// the otto bus will get events from broadcast receivers
-		bus.register(this);
 
 		// get scan results from wifi in background
 		Runnable runnable = new Runnable() {
@@ -126,7 +126,7 @@ public class Main extends DaggerActivity {
 
 	private void getSquareRepos() {
 		try {
-			Github githubApi = DaggerModule.getRestAdapter().create(Github.class);
+			Github githubApi = restAdapater.create(Github.class);
 			final List<Repo> repos = githubApi.getSquareRepos();
 			//final Org square = githubApi.getSquare();
 			runOnUiThread(new Runnable() {

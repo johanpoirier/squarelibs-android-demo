@@ -19,12 +19,11 @@ import dagger.Module;
 import dagger.ObjectGraph;
 import dagger.Provides;
 
-@Module(entryPoints = { Main.class, WifiInfoReceiver.class})
+@Module(entryPoints = { Main.class, WifiInfoReceiver.class })
 public class DaggerModule {
 
 	private static ObjectGraph graph;
-	private static RestAdapter restAdapter;
-	
+
 	@Provides
 	@Singleton
 	public MyService provideMyService() {
@@ -37,26 +36,23 @@ public class DaggerModule {
 		// our event bus running on any thread
 		return new Bus(ThreadEnforcer.ANY);
 	}
-	
+
 	// give access to the graph in the entire app
 	public static ObjectGraph getObjectGraph() {
-		if(graph == null) {
+		if (graph == null) {
 			graph = ObjectGraph.create(new DaggerModule());
 		}
 		return graph;
 	}
-	
 
-	// give access to the rest api to the entire app
-	public static RestAdapter getRestAdapter() {
-		if(restAdapter == null) {
-			// rest api
-		    restAdapter = new RestAdapter.Builder()
-		    .setServer(new Server("https://api.github.com"))
-		    .setClient(new DefaultHttpClient())
-		    .setConverter(new GsonConverter(new Gson()))
-		    .build();
-		}
-		return restAdapter;
+	@Provides
+	@Singleton
+	public RestAdapter getRestAdapter() {
+		// give access to the rest api to the entire app
+		return new RestAdapter.Builder()
+			.setServer(new Server("https://api.github.com"))
+			.setClient(new DefaultHttpClient())
+			.setConverter(new GsonConverter(new Gson()))
+			.build();
 	}
 }

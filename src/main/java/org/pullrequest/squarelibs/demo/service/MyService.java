@@ -1,8 +1,9 @@
 package org.pullrequest.squarelibs.demo.service;
 
 
-public class MyService {
 
+public class MyService {
+	
 	public String getName() {
 		return "Johan";
 	}

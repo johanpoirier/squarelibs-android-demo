@@ -16,5 +16,8 @@ public abstract class DaggerActivity extends Activity {
 	protected void onCreate(android.os.Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		DaggerModule.getObjectGraph().inject(this);
+		
+		// the otto bus will get events from broadcast receivers
+		bus.register(this);
 	}
 }
